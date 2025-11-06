@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -10,56 +11,43 @@ namespace Password_Validation_Console
 {
     internal class ValidatePassword
     {
-        private char[] chars;
+        private readonly string _password;
         public ValidatePassword(string password)
         {
-            chars = password.ToCharArray(); 
+            _password = password ?? throw new AbandonedMutexException(nameof(password));
         }
         
-        public void Validate()
+        public ValidationResult Validate()
         {
-            bool isSpecialChar = false;
-            bool isBigLetter = false;
-            bool isSmallLetter = false;
-            bool hasDigit = false;
-            bool isGoodLength = chars.Length >= 8;
+            List<string> errors = new List<string>();
 
-            foreach (char c in chars)
+            if(_password.Length < 8)
             {
-                if (char.IsUpper(c))
-                {
-                    isBigLetter = true;
-                } 
-                if(char.IsLower(c))
-                {
-                    isSmallLetter = true;
-                }
-                if(char.IsDigit(c))
-                {
-                    hasDigit = true;
-                }
-                if(!char.IsLetterOrDigit(c))
-                {
-                    isSpecialChar = true;
-                }
+                errors.Add("Password must be at least 8 characters long.");
             }
-            if(isSpecialChar && isBigLetter && isSmallLetter && hasDigit && isGoodLength)
+            if(!_password.Any(char.IsUpper))
             {
-                Console.WriteLine("Good Password. Login in");
-                
+                errors.Add("Pasowrd have to contain at least one uppercase letter");
             }
-            else
+            if(!_password.Any(char.IsLower))
             {
-                Console.WriteLine("Wrong Password!:");
-                if (!isGoodLength) Console.WriteLine("-min length is (8 chars!)");
-                if (!isBigLetter) Console.WriteLine("-there is no upper case letter!");
-                if (!isSmallLetter) Console.WriteLine("- there is no lower case letter! ");
-                if (!hasDigit) Console.WriteLine("- there is no digit!");
-                if (!isSpecialChar) Console.WriteLine("-there is no special char!");
-                Console.WriteLine("TryAgain!");
+                errors.Add("Password have to contain at least one lowercase letter");
             }
-
+            if(!_password.Any(char.IsDigit))
+            {
+                errors.Add("Passoword have to contain at least one digit");
+            }
+            if(_password.All(char.IsLetterOrDigit))
+            {
+                errors.Add("Password have to contain at least one special character");
+            }
+                return new ValidationResult(errors);
         }
+
+
+
+
+
 
     }
 }

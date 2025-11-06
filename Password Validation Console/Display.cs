@@ -1,22 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Password_Validation_Console
 {
-    internal class Display
+    internal class Display  
     {
-        private ValidatePassword validePassword;
-        public static bool isValidPassword = true;
-        public void DisplayProgram()
+        public void Print()
         {
-            while (isValidPassword)
+            bool isValid = false;
+            while(!isValid)
             {
-                validePassword.Validate(Console.ReadLine());
+                Console.WriteLine("==================");
+                Console.Write("Enter password: ");
+                string input = Console.ReadLine();
+
+                ValidatePassword  validator = new ValidatePassword(input);
+
+                ValidationResult result = validator.Validate();
+                
+                if(result.isValid)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Password is valid!");
+                    Console.WriteLine("Login in...");
+                    isValid = true;
+                }else
+                {
+                    Console.WriteLine("Password is invalid! Try again");
+                    Console.WriteLine("Errors: ");
+                    foreach (string error in result.Errors)
+                    {
+                        Console.WriteLine($"- {error}");
+                    }
+                }
+
+
 
             }
+        
         }
 
     }

@@ -4,13 +4,12 @@
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+            Display display = new Display();
+
+            display.Print();
+        
         }
 
 
-        public void ValidatePassword(string password)
-        {
-
-        }
     }
 }
